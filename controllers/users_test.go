@@ -12,49 +12,34 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type UserResponse struct {
-	Message string
-	Data    []model.Users
-}
-
 func TestIndex(t *testing.T) {
-	var testCases = []struct {
-		name       string
-		path       string
-		expectCode int
-		sizeData   int
-	}{
-		{
-			name:       "get user normal",
-			path:       "/users",
-			expectCode: http.StatusOK,
-			sizeData:   1,
-		},
-	}
+	mockUserModel := new(model.UsersModelMock)
 
 	var config = config.InitConfig()
 	var gorm = model.InitModel(*config)
-	var model = model.UsersModel{}
-	model.Init(gorm)
+	var mdl = model.UsersModel{}
+	mdl.Init(gorm)
 	var ctl = UserController{}
-	ctl.InitUserController(model, *config)
+	ctl.InitUserController(mdl, *config)
 
-	var e = echo.New()
+	mockUserModel.On("GetDatas").Return([]model.Users{{
+		Name:     "Ilham Budiawan",
+		Email:    "budiawanilham04@gmail.com",
+		Password: "12345"}}, nil)
 
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, testCase.path, nil)
-			rec := httptest.NewRecorder()
-			c := e.NewContext(req, rec)
+	req := httptest.NewRequest(http.MethodGet, "/users", nil)
+	rec := httptest.NewRecorder()
+	c := echo.New().NewContext(req, rec)
+	err := ctl.Index()(c)
 
-			if assert.NoError(t, ctl.Index()(c)) {
-				assert.Equal(t, testCase.expectCode, rec.Code)
+	if assert.NoError(t, err) {
+		var response map[string]interface{}
+		json.Unmarshal(rec.Body.Bytes(), &response)
+		users := response["users"].([]interface{})
 
-				var user UserResponse
-				if assert.NoError(t, json.Unmarshal(rec.Body.Bytes(), &user)) {
-					assert.Equal(t, testCase.sizeData, len(user.Data))
-				}
-			}
-		})
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, "success get all users", response["message"])
+		assert.NotNil(t, users)
+		assert.Len(t, users, 2)
 	}
 }

@@ -19,13 +19,26 @@ type ProgramConfig struct {
 
 func InitConfig() *ProgramConfig {
 	var res = new(ProgramConfig)
-	res = loadConfig()
+	// res = loadConfig()
+	res = loadConfigTest()
 
 	if res == nil {
 		logrus.Fatal("Config : Cannot start program, failed to load configuration")
 		return nil
 	}
 
+	return res
+}
+
+func loadConfigTest() *ProgramConfig {
+	var res = new(ProgramConfig)
+	res.DB_Username = "root"
+	res.DB_Password = "mysql"
+	res.DB_Port = "3306"
+	res.DB_Host = "127.0.0.1"
+	res.DB_Name = "crud_go"
+	res.SECRET = "mysecretkey123"
+	res.SECRETREFRESH = "myrefreshkey456"
 	return res
 }
 

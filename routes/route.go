@@ -10,8 +10,8 @@ import (
 
 func RouteUser(e *echo.Echo, uc controller.UserController, cfg config.ProgramConfig) {
 	e.POST("/login", uc.Login())
-	e.GET("/users", uc.Index(), echojwt.JWT([]byte(cfg.SECRET)))
-	e.GET("/users/:id", uc.Show(), echojwt.JWT([]byte(cfg.SECRET)))
+	e.GET("/users", uc.Index())
+	e.GET("/users/:id", uc.Show())
 	e.POST("/users", uc.Create())
 	e.PUT("/users/:id", uc.Update(), echojwt.JWT([]byte(cfg.SECRET)))
 	e.DELETE("/users/:id", uc.Delete(), echojwt.JWT([]byte(cfg.SECRET)))
@@ -21,7 +21,7 @@ func RouteBook(e *echo.Echo, uc controller.BookController, cfg config.ProgramCon
 	e.GET("/books", uc.Index(), echojwt.JWT([]byte(cfg.SECRET)))
 	e.GET("/books/:id", uc.Show(), echojwt.JWT([]byte(cfg.SECRET)))
 	e.POST("/books", uc.Create(), echojwt.JWT([]byte(cfg.SECRET)))
-	e.PUT("/books/:id", uc.Update(), echojwt.JWT([]byte(cfg.SECRET)))
+	e.PUT("/books/:id", uc.Update())
 	e.DELETE("/books/:id", uc.Delete(), echojwt.JWT([]byte(cfg.SECRET)))
 }
 

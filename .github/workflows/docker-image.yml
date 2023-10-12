@@ -37,3 +37,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            docker stop ${{ secrets.CNAME }}
+            docker rm ${{ secrets.CNAME }}
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/imgkmb
+            docker run --name ${{ secrets.CNAME }} -p 8000:8000 -d -e DB_USERNAME=${{secrets.DB_USERNAME}} -e DB_PORT=3306 -e DB_PASSWORD=${{secrets.DB_PASSWORD}} -e DB_HOST=${{secrets.DB_HOST}} -e DB_NAME=${{secrets.DB_NAME}} -e SECRET=${{secrets.JWTSECRET}} -e SECRETREFRESH=${{secrets.SECRETREFRESH}} -e SERVER=8000 ${{ secrets.DOCKERHUB_USERNAME }}/imgkmb

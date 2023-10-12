@@ -18,7 +18,7 @@ func RouteUser(e *echo.Echo, uc controller.UserController, cfg config.ProgramCon
 }
 
 func RouteBook(e *echo.Echo, uc controller.BookController, cfg config.ProgramConfig) {
-	e.GET("/books", uc.Index(), echojwt.JWT([]byte(cfg.SECRET)))
+	e.GET("/books", uc.Index())
 	e.GET("/books/:id", uc.Show(), echojwt.JWT([]byte(cfg.SECRET)))
 	e.POST("/books", uc.Create(), echojwt.JWT([]byte(cfg.SECRET)))
 	e.PUT("/books/:id", uc.Update())

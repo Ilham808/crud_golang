@@ -19,8 +19,8 @@ type ProgramConfig struct {
 
 func InitConfig() *ProgramConfig {
 	var res = new(ProgramConfig)
-	// res = loadConfig()
-	res = loadConfigTest()
+	 res = loadConfig()
+	// res = loadConfigTest()
 
 	if res == nil {
 		logrus.Fatal("Config : Cannot start program, failed to load configuration")

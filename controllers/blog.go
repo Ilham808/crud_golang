@@ -26,8 +26,8 @@ func (uc *BlogController) Index() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, map[string]interface{}{
-			"message": "success get all Blog",
-			"Blog":    Blog,
+			"message": "success get all blogs",
+			"blog":    Blog,
 		})
 	}
 }

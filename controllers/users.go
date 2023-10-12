@@ -4,7 +4,6 @@ import (
 	"OrmGo/config"
 	"OrmGo/helpers"
 	model "OrmGo/models"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -136,23 +135,30 @@ func (uc *UserController) Login() echo.HandlerFunc {
 		}
 
 		if err := c.Bind(&req); err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Invalid request")
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{
+				"error": "Invalid request",
+			})
 		}
 
 		user, err := uc.model.GetUserByEmail(req.Email)
 		if err != nil || user.Password != req.Password {
-			return echo.NewHTTPError(http.StatusUnauthorized, "Invalid credentials")
+			return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+				"error": "Invalid credentials",
+			})
 		}
 
 		token, err := helpers.GenerateToken(uc.config.SECRET, user.ID)
 		if err != nil {
-			log.Println(err)
-			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to generate token")
+			return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"error": "Failed to generate token",
+			})
 		}
 
 		refreshToken, err := helpers.GenerateRefreshToken(uc.config.SECRETREFRESH, user.ID)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to generate refresh token")
+			return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"error": "Failed to generate refresh token",
+			})
 		}
 
 		return c.JSON(http.StatusOK, map[string]interface{}{
